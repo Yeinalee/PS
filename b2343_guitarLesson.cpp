@@ -12,7 +12,7 @@ int main()
     for (int i = 0; i < N; i++)
     {
         cin >> arr[i];
-        sum += arr[i];          // 최대값은 모든 배열의 합
+        sum += arr[i];          // 최대값은 모든 배열 합
         min = max(min, arr[i]); // 최솟값의 배열의 원소 중 최솟값
     }
 
@@ -41,4 +41,5 @@ int main()
     }
     cout << min;
     return 0;
+    
 }
