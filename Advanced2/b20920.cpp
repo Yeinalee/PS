@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <map>
 #include <algorithm>
 using namespace std;
 
@@ -22,25 +23,16 @@ int main()
     int n, m;
     cin >> n >> m;
     string s;
-    vector<pair<string, int>> word;
+    map<string, int> word_count;
     while (n--)
     {
         cin >> s;
-        bool dup = false;
-        if (s.length() < m)
-            continue;
-        for (int i = 0; i < word.size(); i++)
+        if (s.length() >= m)
         {
-            if (word[i].first == s)
-            {
-                dup = true;
-                word[i].second++;
-                break;
-            }
+            word_count[s]++;
         }
-        if (!dup)
-            word.push_back({s, 1});
     }
+    vector<pair<string, int>> word(word_count.begin(), word_count.end());
     sort(word.begin(), word.end(), order);
     for (int i = 0; i < word.size(); i++)
     {
