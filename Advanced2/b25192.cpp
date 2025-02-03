@@ -1,5 +1,5 @@
 #include <iostream>
-#include <vector>
+#include <unordered_set>
 using namespace std;
 int main()
 {
@@ -7,7 +7,7 @@ int main()
     cin.tie(0);
     int n, answer = 0;
     string s;
-    vector<string> bear;
+    unordered_set<string> bear;
     cin >> n;
     while (n--)
     {
@@ -19,15 +19,10 @@ int main()
         }
         else
         {
-            for (auto name : bear)
-            {
-                if (name == s)
-                    dup = true;
-            }
-            if (!dup)
+            if (bear.find(s) == bear.end())
             {
                 answer++;
-                bear.push_back(s);
+                bear.insert(s);
             }
         }
     }
