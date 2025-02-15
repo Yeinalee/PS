@@ -1,46 +1,53 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
-int n, diff = 2000;
-vector<int> used(20, 0);
 
-int getdiff(vector<vector<int>> &s)
+int n, diff = 2000;
+vector<int> team;
+vector<vector<int>> s;
+
+int getdiff()
 {
     int a = 0, b = 0;
+    vector<int> teamA, teamB;
+
     for (int i = 0; i < n; i++)
     {
-        if (used[i]) // a팀
+        if (find(team.begin(), team.end(), i) != team.end()) // a팀
         {
-            for (int j = 0; j < n; j++)
-                if (used[j])
-                    a += s[i][j];
+            teamA.push_back(i);
         }
         else // b팀
         {
-            for (int j = 0; j < n; j++)
-                if (!used[j])
-                    b += s[i][j];
+            teamB.push_back(i);
+        }
+    }
+
+    for (int i = 0; i < n / 2; i++)
+    {
+        for (int j = 0; j < n / 2; j++)
+        {
+            a += s[teamA[i]][teamA[j]];
+            b += s[teamB[i]][teamB[j]];
         }
     }
     return a - b > 0 ? a - b : b - a;
 }
 
-void answer(vector<vector<int>> &s, int num)
+void answer(int idx)
 {
-    if (n / 2 == num)
+    if (team.size() == n / 2)
     {
-        int ans = getdiff(s);
-        if (diff > ans)
-            diff = ans;
+        diff = min(diff, getdiff());
+        return;
     }
-    for (int i = 0; i < n; i++)
+
+    for (int i = idx; i < n; i++)
     {
-        if (!used[i])
-        {
-            used[i]++;
-            answer(s, num + 1);
-            used[i]--;
-        }
+        team.push_back(i);
+        answer(i + 1);
+        team.pop_back();
     }
 }
 
@@ -49,16 +56,13 @@ int main()
     ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
     int x;
     cin >> n;
-    vector<vector<int>> s(n, vector<int>(n, 0));
+    s.assign(n, vector<int>(n));
+
     for (int i = 0; i < n; i++)
-    {
         for (int j = 0; j < n; j++)
-        {
-            cin >> x;
-            s[i][j] = x;
-        }
-    }
-    answer(s, 0);
+            cin >> s[i][j];
+
+    answer(0);
     cout << diff << '\n';
     return 0;
 }
