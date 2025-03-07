@@ -11,14 +11,15 @@ vector<int> dy = {0, 0, -1, 1};
 
 void dfs(int i, int j)
 {
-    queue<pair<int, int>> q;
-    q.push({i, j});
+    vector<pair<int, int>> q;
+    q.push_back({i, j});
+    visited[i][j] = 1;
 
     while (!q.empty())
     {
-        int x = q.front().first;
-        int y = q.front().second;
-        q.pop();
+        int x = q.back().first;
+        int y = q.back().second;
+        q.pop_back();
         for (int a = 0; a < 4; a++)
         {
             int nx = x + dx[a];
@@ -28,7 +29,7 @@ void dfs(int i, int j)
                 if (visited[nx][ny] == 0 && map[nx][ny] == 1)
                 {
                     visited[nx][ny] = 1;
-                    q.push({nx, ny});
+                    q.push_back({nx, ny});
                 }
             }
         }
