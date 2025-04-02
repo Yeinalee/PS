@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <tuple>
 #include <algorithm>
-#include <cmath>
 using namespace std;
 int n, m, sr, sc, er, ec;
 vector<pair<int, int>> path;
@@ -114,6 +114,7 @@ int cnt_stone_war(int &cx, int &cy, int dir)
             break;
         if (scope[nx][ny] == 1) // 전사를 만나는 경우
         {
+            scope[nx][ny] = 2;
             for (int i = 0; i < m; i++)
             {
                 if (get<0>(warrior[i]) == nx && get<1>(warrior[i]) == ny)
@@ -147,12 +148,13 @@ int cnt_stone_war(int &cx, int &cy, int dir)
                 int nxt = nx + dx[dir] * step;
                 int nyt = ny + dy[dir] * step;
 
-                if (nxt < 0 || nxt >= n || nyt < 0 || nyt >= n || scope[nx][ny] == 3)
+                if (nxt < 0 || nxt >= n || nyt < 0 || nyt >= n || scope[nxt][nyt] == 3)
                     break;
 
                 // 전사를 만나는 경우
                 if (scope[nxt][nyt] == 1)
                 {
+                    scope[nxt][nyt] = 2;
                     // 전사 -> 돌
                     for (int j = 0; j < m; j++)
                     {
@@ -164,17 +166,19 @@ int cnt_stone_war(int &cx, int &cy, int dir)
                     }
 
                     // 전사 뒤 대각선 방향
+                    int nnxt = nxt, nnyt = nyt;
                     while (true)
                     {
-                        nxt += dx[dir] + dx[ddir];
-                        nyt += dy[dir] + dy[ddir];
-                        if (nxt < 0 || nxt >= n || nyt < 0 || nyt >= n)
+                        nnxt += dx[dir] + dx[ddir];
+                        nnyt += dy[dir] + dy[ddir];
+                        if (nnxt < 0 || nnxt >= n || nnyt < 0 || nnyt >= n)
                             break;
 
-                        scope[nxt][nyt] = 3;
+                        scope[nnxt][nnyt] = 3;
                     }
+                    break;
                 }
-                scope[nx][ny] = 2;
+                scope[nxt][nyt] = 2;
                 step++;
             }
         }
@@ -304,14 +308,18 @@ int main()
 
     for (int i = 0; i < path.size() - 1; i++)
     {
-        int die = 0;
+        int med = 0;
         // 메두사가 이동한 곳에 전사 -> 죽음
         for (int j = 0; j < m; j++)
         {
             if (path[i].first == get<0>(warrior[j]) && path[i].second == get<1>(warrior[j]))
+            {
                 get<3>(warrior[j]) = 1;
+                med++;
+            }
         }
 
+        int die = 0;
         int stone = med_stone(path[i].first, path[i].second);  // 전사 돌 여부
         int len = move_warrior(path[i].first, path[i].second); // 전사 이동
         for (int j = 0; j < m; j++)
@@ -322,7 +330,7 @@ int main()
                 get<3>(warrior[j]) = 1;
             }
         }
-        answer.push_back({len, stone, die});
+        answer.push_back({len, stone, die - med});
         // cout << len << ' ' << stone << ' ' << die << '\n';
     }
 
